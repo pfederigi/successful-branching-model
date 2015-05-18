@@ -97,11 +97,14 @@ environments {
 
 // log4j configuration
 log4j.main = {
-    // Example of changing the log pattern for the default console appender:
-    //
-    //appenders {
-    //    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
-    //}
+
+    appenders {
+        //Defines standard output for logging
+        console name:'stdout', layout:pattern(conversionPattern: '%-5p %d{yyyy/MM/dd HH:mm:ss} %c{2} %m%n')
+        //Defines two more appenders 
+        file name:'console', file:System.getProperty("user.home") + "/logs/sbmtest.log", layout:pattern(conversionPattern: '%-5p %d{yyyy/MM/dd HH:mm:ss} %c{2} %m%n')
+        file name:'consoleOther', file:System.getProperty("user.home") + "/logs/sbmtestOther.log", layout:pattern(conversionPattern: '%-5p %d{yyyy/MM/dd HH:mm:ss} %c{2} %m%n'), threshold: org.apache.log4j.Level.ERROR
+    }
 
     error  'org.codehaus.groovy.grails.web.servlet',        // controllers
            'org.codehaus.groovy.grails.web.pages',          // GSP
@@ -114,4 +117,20 @@ log4j.main = {
            'org.springframework',
            'org.hibernate',
            'net.sf.ehcache.hibernate'
+
+    //Level for artifacts (controllers, services, taglibs, etc)
+    info consoleOther: 'grails.app'
+    //attach logger to appender
+    info additivity: false, consoleOther: 'grails.app.services.my.PersonService'
+
+    /*** Primary logging ***/
+    //(additivity: true) means that parent logging is still functional 
+    //ex: grails.app and root
+    warn additivity: true, console: 'grails.app.controllers.my.PersonController'
+    debug additivity: false, console: 'grails.app.services.my.PersonService'
+
+    //Root logging configuration
+    root {
+        warn()
+    }
 }

@@ -9,9 +9,21 @@ import grails.transaction.Transactional
 class PersonController {
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
+    def personService;
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
+        
+        log.trace("trace index")
+        log.debug("debug index")
+        log.info("info index")
+        log.warn("warn index")
+        log.error("error index")
+
+        println "console index"
+
+        personService.getAll()
+
         respond Person.list(params), model:[personInstanceCount: Person.count()]
     }
 
